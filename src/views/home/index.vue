@@ -62,6 +62,7 @@
 // 检查项目
 import InspectionItem from '@/components/InspectionItem.vue'
 import NavBar from '@/components/NavBar.vue'
+
 export default {
   data() {
     return {
