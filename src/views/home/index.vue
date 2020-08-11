@@ -5,17 +5,11 @@
       <van-tabs type="card" background="#3C85F7" title-active-color="#3C85F7" color="#fff">
         <van-tab title="专项检查" dot>
           <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-            <van-list
-              v-model="loading"
-              :finished="finished"
-              finished-text="没有更多了"
-              @load="onLoad"
-              class="list"
-            >
+            <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad" class="list">
               <div class="inspection-header van-hairline--surround">
                 <div class="name">
                   <span>XXXXX检查项目</span>
-                  <van-checkbox v-model="isChecked"></van-checkbox>
+                  <van-checkbox v-model="checked"></van-checkbox>
                 </div>
                 <div class="desc">
                   <span>检查时间范围</span>
@@ -28,17 +22,11 @@
                 <div class="projectNum">1</div>
               </div>
               <!--  检查项目 -->
-              <InspectionItem :isChecked="isChecked" />
+              <InspectionItem :isChecked.sync="isChecked" />
             </van-list>
           </van-pull-refresh>
           <div class="submit" @click="goInspectionDetail">
-            <van-button
-              class="submit-btn"
-              block
-              type="info"
-              @click="goDetail"
-              native-type="submit"
-            >确定</van-button>
+            <van-button class="submit-btn" block type="info" @click="goDetail" native-type="submit">确定</van-button>
           </div>
         </van-tab>
         <van-tab title="历史记录">
@@ -78,6 +66,13 @@ export default {
       finished: false,
       refreshing: false,
       searchValue: ''
+    }
+  },
+  watch: {
+    isChecked(newV, oldV) {
+      console.log(newV, oldV)
+      // 三秒后控制台会输出
+      // '3秒后出现的某个值','test'
     }
   },
   components: {
@@ -150,17 +145,7 @@ export default {
     left: 2px;
     transform: rotate(-40deg);
   }
-  // &:before {
-  //   content: '';
-  //   position: absolute;
-  //   border: 10px solid #e6686e;
-  //   height: 0;
-  //   width: 0;
-  //   border-right-color: transparent;
-  //   border-bottom-color: transparent;
-  //   top: 0;
-  //   left: 0;
-  // }
+
   .name {
     display: flex;
     height: 40px;

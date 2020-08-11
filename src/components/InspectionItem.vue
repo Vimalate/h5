@@ -2,13 +2,13 @@
   <div class="inspection-item van-hairline--surround">
     <div class="name">
       <span>XXXXX检查项目</span>
-      <van-checkbox v-model="isChecked"></van-checkbox>
+      <van-checkbox @click="changed" v-model="isChecked"></van-checkbox>
     </div>
     <div class="desc">
       <span>巡检专家 | 刘秀宝</span>
       <span>日期 | 2020-03-08</span>
     </div>
-     <div class="projectNum">2</div>
+    <div class="projectNum">2</div>
   </div>
 </template>
 
@@ -16,13 +16,18 @@
 export default {
   name: 'InspectionItem',
   props: {
-    isChecked: Boolean
+    isChecked: {
+      type: Boolean,
+      default: true
+    }
   },
   data() {
     return {}
   },
-  computed: {
-    // isChecked
+  methods: {
+    changed() {
+      this.$emit('update:isChecked', !this.isChecked)
+    }
   }
 }
 </script>
