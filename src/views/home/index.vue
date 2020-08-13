@@ -71,8 +71,8 @@
 // 检查项目
 // import InspectionItem from "@/components/program/businessComponents/specialInspection/InspectionItem.vue";
 // 历史记录
-import InspectionHistory from "@/components/program/businessComponents/specialInspection/InspectionHistory.vue";
-import http from "@/model/specialInspection/http.js";
+import InspectionHistory from "@/components/InspectionHistory.vue";
+import http from "@/utils/http.js";
 export default {
   data() {
     return {
@@ -105,7 +105,7 @@ export default {
 
     goBack() {},
     goDetail() {
-      this.$router.push({ name: "InspectionDetail" });
+      this.$router.push({ name: "Detail" });
       // this.editSpecial();
     },
     goInspectionDetail() {},
@@ -117,7 +117,7 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 // .head{}
 .inspection-header {
   background-color: #fff;
