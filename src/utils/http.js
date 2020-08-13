@@ -1,50 +1,51 @@
-import axios from "axios";
+import axios from 'axios'
 // import router from './router'
 // import Vue from 'vue'
-import { Toast } from "vant";
+import { Toast } from 'vant'
 
 const http = axios.create({
-  baseURL: "http://192.168.4.178:10003/specialInspection",
-  timeout: 5000,
-});
+  // baseURL: "http://192.168.4.178:10003/specialInspection",
+  baseURL: 'https://easy-mock.sucaidaohang.com/mock/5f328d31eeda710d1440d783/inspection',
+  timeout: 5000
+})
 
 http.interceptors.request.use(
-  (config) => {
+  config => {
     // if (localStorage.getItem('token') && localStorage.getItem('id')) {
 
     // }
     if (!config.hideloading) {
       // loading
       Toast.loading({
-        forbidClick: true,
-      });
+        forbidClick: true
+      })
     }
-    config.headers.Authorization = " ";
-    return config;
+    config.headers.Authorization = ' '
+    return config
   },
-  (err) => {
-    return Promise.reject(err);
+  err => {
+    return Promise.reject(err)
   }
-);
+)
 
 http.interceptors.response.use(
-  (response) => {
+  response => {
     Toast.clear()
     const res = response.data
     if (res.status && res.status !== 200) {
-        Toast.fail('获取数据失败')
-        return Promise.reject(res || 'error')
-      } else {
-        return Promise.resolve(res)
-      }
+      Toast.fail('获取数据失败')
+      return Promise.reject(res || 'error')
+    } else {
+      return Promise.resolve(res)
+    }
   },
-  (err) => {
-    console.dir(err);
+  err => {
+    console.dir(err)
     if (err.response.status === 401 || err.response.status === 402) {
       Toast.clear()
       console.log('error' + err)
     }
-    Promise.reject(err);
+    Promise.reject(err)
   }
-);
-export default http;
+)
+export default http

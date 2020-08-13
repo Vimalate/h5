@@ -18,7 +18,10 @@ import {
   Field,
   Popup,
   Picker,
-  CheckboxGroup
+  CheckboxGroup,
+  RadioGroup,
+  Radio,
+  Uploader
 } from 'vant'
 Vue.use(Button)
 Vue.use(Cell)
@@ -39,3 +42,6 @@ Vue.use(Tabbar)
   .use(Popup)
   .use(Picker)
   .use(CheckboxGroup)
+  .use(RadioGroup)
+  .use(Radio)
+  .use(Uploader)

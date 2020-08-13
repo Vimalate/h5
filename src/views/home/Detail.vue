@@ -90,8 +90,8 @@
             <div class="projectNum">{{index+1}}</div>
           </div> 
           <!-- 根据配置数据动态渲染 -->
-          <!-- <div class="data-card" >
-            <div  v-for="(item, index) in pageConfigData" :key="index">
+          <div class="data-card" >
+            <div  class='acync-data'>
                <van-field
               colon
               :label="item.cellName"
@@ -103,10 +103,18 @@
               :value="item.defaultValue"
              v-if="item.controlCode==='input'"
             />
+            <van-field v-if="item.controlCode==='input'"  colon name="checkboxGroup" label="评分">
+              <template #input>
+                <van-radio-group v-model="radio" direction="horizontal">
+                  <van-radio name="1" shape="square">符合</van-radio>
+                  <van-radio name="2" shape="square">不符合</van-radio>
+                </van-radio-group>
+              </template>
+            </van-field>
           </div>
             <div class="projectNum">{{index+1}}</div>
             
-          </div> -->
+          </div>
           
           <!-- footer -->
           <van-cell-group class="footer">
@@ -153,7 +161,8 @@
 
 <script>
 import { Dialog, Toast } from "vant";
-import http from "@/model/specialInspection/http.js";
+import http from '@/utils/http.js'
+// import http from "@/model/specialInspection/http.js";
 export default {
   data() {
     return {
@@ -173,9 +182,7 @@ export default {
   mounted() {
     this.editSpecial();
   },
-  mounted() {
-    this.getDetail()
-  },
+ 
   methods: {
     // 新增编辑
     async editSpecial() {
@@ -188,18 +195,23 @@ export default {
         projectId: "E46D1EA9-651A-E954-BF10-21E6EB496061",
         userId: "1",
       };
-      const { data: res } = await http.post("/editSpecialInspection", payload);
+      const { data: res } = await http.post('/inspectionDetail');
       console.log(res);
       this.superviseInfoData = res.superviseInfoData;//头尾部固定数据
       this.editSpecialList = this.superviseInfoData.superviseInfoItemList;//页面具体总数据
       // this.editSpecialList.pageConfigData = res.pageConfigData;
-      this.pageConfigData=res.pageConfigData//页面配置项数据
+      // this.pageConfigData=res.pageConfigData//页面配置项数据
       // console.log(this.pageConfigData);
       // console.log("superviseInfoData", this.superviseInfoData);
       // console.log("editSpecialList", this.editSpecialList);
       this.pageConfigData.map(item=>{
         item.businessName=item.businessName===this.editSpecialList.map(ite=>{
-          
+         let a={bind:'item1',label:'input'},b={item1:1}
+         let key=a.bind
+         if(b.hasOwnProperty(a.bind)){
+           a.value=b.item1
+         }
+         console.log(a,b)
         })
       })
       this.inspectionData.pageConfigData=this.pageConfigData
@@ -243,7 +255,7 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .data-card {
   margin-top: 15px;
   position: relative;

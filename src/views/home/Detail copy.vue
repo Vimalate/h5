@@ -122,7 +122,7 @@ export default {
   methods: {
     // https://easy-mock.sucaidaohang.com/
      async getDetail(){
-       const {data:res}=await service.post('https://easy-mock.sucaidaohang.com/mock/5f328d31eeda710d1440d783/inspection/inspectionDetail')
+       const {data:res}=await service.post('/inspectionDetail')
        console.log(res)
     },
     onConfirm(value) {
