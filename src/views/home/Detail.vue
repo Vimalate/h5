@@ -4,7 +4,7 @@
       <van-tab
         class="inspection-item"
         :title="item.bussinessName"
-        v-for="(item) in editSpecialList"
+        v-for="(item) in cartData"
         :key="item.bussinessId"
       >
         <div class="detail-card">
@@ -43,23 +43,36 @@
 
           <div
             class="data-card"
-            v-for="(dataItem, index) in item.superviseInfoThirdList"
+            v-for="(dataItem, index) in item.businessIdPageConfigData"
             :key="dataItem.id"
           >
-            <van-field
-              readonly
-              clickable
-              colon
-              type="textarea"
-              autosize
-              center
-              rows="1"
-              name="picker"
-              :value="dataItem.item1"
-              label="评分项目"
-              placeholder="点击选择检查项"
-            />
-            <van-field readonly clickable colon name="picker" :value="dataItem.item2" label="分值" />
+            <div v-for="(ite, idx) in dataItem.surfaceConfigItem" :key="idx">
+              <van-field
+                :readonly="ite.isEdit=='0'"
+                clickable
+                colon
+                type="textarea"
+                autosize
+                center
+                rows="1"
+                name="picker"
+                v-model="ite.value"
+                :label="ite.cellName"
+                v-if="ite.controlCode==='input'"
+                placeholder="点击选择检查项"
+              />
+               <van-field colon v-if="ite.controlCode=='radio'" name="checkboxGroup" :label="ite.cellName">
+              <template #input>
+                <van-radio-group v-model="ite.value" direction="horizontal">
+                  <van-radio name="1" shape="square">符合</van-radio>
+                  <van-radio name="2" shape="square">不符合</van-radio>
+                </van-radio-group>
+              </template>
+            </van-field>
+            <van-field readonly colon v-if="ite.controlCode=='number'" clickable   v-model="ite.value" :label="ite.cellName" />
+            </div>
+            
+            <!-- <van-field readonly clickable colon name="picker" :value="dataItem.item2" label="分值" />
             <van-field
               colon
               label="评分标准"
@@ -70,7 +83,7 @@
               readonly
               :value="dataItem.item3"
             />
-            <van-field colon v-model="dataItem.item4" type="number" label="评分" />
+            <van-field colon v-model="dataItem.item4" type="number" label="评分" /> -->
             <!-- <van-field colon name="checkboxGroup" label="评分">
               <template #input>
                 <van-radio-group v-model="radio" direction="horizontal">
@@ -186,7 +199,7 @@ export default {
         projectId: "E46D1EA9-651A-E954-BF10-21E6EB496061",
         userId: "1",
       };
-      const { data: res } = await http.post("/editSpecialInspection", payload);
+      const { data: res } = await http.post("/inspectionDetail", payload);
       console.log(res);
       this.superviseInfoData = res.superviseInfoData; //头尾部固定数据
       this.editSpecialList = this.superviseInfoData.superviseInfoItemList; //页面具体总数据
