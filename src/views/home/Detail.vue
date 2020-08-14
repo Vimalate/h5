@@ -4,20 +4,14 @@
       <van-tab
         class="inspection-item"
         :title="item.bussinessName"
-        v-for="(item) in editSpecialList"
+        v-for="item in dataCard"
         :key="item.bussinessId"
       >
         <div class="detail-card">
           <!-- header -->
           <div class="header">
             <van-cell-group :border="false">
-              <van-field
-                label-width="100"
-                label="专项检查名称："
-                center
-                :value="item.bussinessName"
-                readonly
-              />
+              <van-field label-width="100" label="专项检查名称：" center :value="item.bussinessName" readonly />
               <van-field label="工程名称：" :value="superviseInfoData.projectBame" readonly />
             </van-cell-group>
             <van-field
@@ -31,35 +25,28 @@
               right-icon="arrow-down"
             />
             <van-popup v-model="showPicker" position="bottom">
-              <van-picker
-                show-toolbar
-                :columns="columns"
-                @confirm="onConfirm"
-                @cancel="showPicker = false"
-              />
+              <van-picker show-toolbar :columns="columns" @confirm="onConfirm" @cancel="showPicker = false" />
             </van-popup>
           </div>
           <!-- data-cart -->
 
-          <div
-            class="data-card"
-            v-for="(dataItem, index) in item.superviseInfoThirdList"
-            :key="dataItem.id"
-          >
-            <van-field
-              readonly
+          <div class="data-card" v-for="(dataItem, index) in item.businessIdPageConfigData" :key="index">
+            <div v-for="(ite, idx) in dataItem.surfaceConfigItem" :key="idx">
+              <van-field
+              :readonly='ite.isEdit==false'
               clickable
               colon
               type="textarea"
               autosize
               center
               rows="1"
-              name="picker"
-              :value="dataItem.item1"
-              label="评分项目"
+              v-if="ite.controlCode==='input'"
+              v-model="ite.value"
+              :label="ite.cellName"
               placeholder="点击选择检查项"
             />
-            <van-field readonly clickable colon name="picker" :value="dataItem.item2" label="分值" />
+            </div>
+            <!-- <van-field readonly clickable colon name="picker" :value="dataItem.item2" label="分值" />
             <van-field
               colon
               label="评分标准"
@@ -70,15 +57,15 @@
               readonly
               :value="dataItem.item3"
             />
-            <van-field colon v-model="dataItem.item4" type="number" label="评分" />
-             <!-- <van-field colon name="checkboxGroup" label="评分">
+            <van-field colon v-model="dataItem.item4" type="number" label="评分" /> -->
+            <!-- <van-field colon name="checkboxGroup" label="评分">
               <template #input>
                 <van-radio-group v-model="radio" direction="horizontal">
                   <van-radio name="1" shape="square">符合</van-radio>
                   <van-radio name="2" shape="square">不符合</van-radio>
                 </van-radio-group>
               </template>
-            </van-field> -->
+            </van-field>-->
             <!-- <van-field
               label-width="100"
               colon
@@ -86,36 +73,36 @@
               label="主要存在问题"
               :value="dataItem.item5"
               readonly
-            /> -->
-            <div class="projectNum">{{index+1}}</div>
-          </div> 
+            />-->
+            <div class="projectNum">{{ index + 1 }}</div>
+          </div>
           <!-- 根据配置数据动态渲染 -->
-          <div class="data-card" >
-            <div  class='acync-data'>
-               <van-field
-              colon
-              :label="item.cellName"
-              rows="1"
-              type="textarea"
-              autosize
-              center
-              readonly
-              :value="item.defaultValue"
-             v-if="item.controlCode==='input'"
-            />
-            <van-field v-if="item.controlCode==='input'"  colon name="checkboxGroup" label="评分">
-              <template #input>
-                <van-radio-group v-model="radio" direction="horizontal">
-                  <van-radio name="1" shape="square">符合</van-radio>
-                  <van-radio name="2" shape="square">不符合</van-radio>
-                </van-radio-group>
-              </template>
-            </van-field>
-          </div>
-            <div class="projectNum">{{index+1}}</div>
-            
-          </div>
-          
+          <!-- <div class="data-card">
+            <div class="acync-data">
+              <van-field
+                colon
+                :label="item.cellName"
+                rows="1"
+                type="textarea"
+                autosize
+                center
+                readonly
+                :value="item.defaultValue"
+                v-if="item.controlCode === 'input'"
+              />
+              <van-field v-if="item.controlCode === 'input'" colon name="checkboxGroup" label="评分">
+                <template #input>
+                  <van-radio-group v-model="radio" direction="horizontal">
+                    <van-radio name="1" shape="square">符合</van-radio>
+                    <van-radio name="2" shape="square">不符合</van-radio>
+                  </van-radio-group>
+                </template>
+              </van-field>
+            </div>
+            <div class="projectNum">{{ index + 1 }}</div>
+
+          </div> -->
+
           <!-- footer -->
           <van-cell-group class="footer">
             <van-field label="监督措施：" :value="superviseInfoData.item2" readonly />
@@ -128,11 +115,7 @@
               </template>
             </van-field>
             <van-field label="检查人：" :value="superviseInfoData.itemMonitor" readonly />
-            <van-field
-              label="检查时间："
-              :value="superviseInfoData.dateItemRecord.split(' ')[0]"
-              readonly
-            />
+            <van-field label="检查时间：" :value="superviseInfoData.dateItemRecord.split(' ')[0]" readonly />
             <van-field label="附件" value="PDF" readonly />
           </van-cell-group>
           <!-- 上传 -->
@@ -160,99 +143,212 @@
 </template>
 
 <script>
-import { Dialog, Toast } from "vant";
+import { Dialog, Toast } from 'vant'
 import http from '@/utils/http.js'
-// import http from "@/model/specialInspection/http.js";
 export default {
   data() {
     return {
-      editSpecialList: [], //新增编辑列表
+      editSpecialList: [], // 新增编辑列表
       superviseInfoData: [],
       checkboxGroup: [],
-      pageConfigData:[],//页面配置数据
+      // pageConfigData:[],//页面配置数据
 
-      bussinessName:[],//头部专项检查名称
-      inspectionData:{},//专项检查总数据
-      value: "",
-      columns: ["杭州", "宁波", "温州", "嘉兴", "湖州"],
+      bussinessName: [], // 头部专项检查名称
+      inspectionData: {}, // 专项检查总数据
+      dataCard: [],
+      value: '',
+      columns: ['杭州', '宁波', '温州', '嘉兴', '湖州'],
       showPicker: false,
-      radio: "1",
-    };
+      radio: '1'
+    }
   },
   mounted() {
-    this.editSpecial();
+    this.editSpecial()
   },
- 
   methods: {
     // 新增编辑
     async editSpecial() {
-      let payload = {
-        bussinessId:
-          "f05df0d0d7d911ea814900ff7beea89a,fcea7ad2d7c711ea814900ff7beea89a",
-        bussinessName: "在建工程项目现场检查情况表,现场作业人员抽查",
-        currentBussinessId: "f05df0d0d7d911ea814900ff7beea89a",
-        id: "1",
-        projectId: "E46D1EA9-651A-E954-BF10-21E6EB496061",
-        userId: "1",
-      };
-      const { data: res } = await http.post('/inspectionDetail');
-      console.log(res);
-      this.superviseInfoData = res.superviseInfoData;//头尾部固定数据
-      this.editSpecialList = this.superviseInfoData.superviseInfoItemList;//页面具体总数据
-      // this.editSpecialList.pageConfigData = res.pageConfigData;
-      // this.pageConfigData=res.pageConfigData//页面配置项数据
-      // console.log(this.pageConfigData);
-      // console.log("superviseInfoData", this.superviseInfoData);
-      // console.log("editSpecialList", this.editSpecialList);
-      this.pageConfigData.map(item=>{
-        item.businessName=item.businessName===this.editSpecialList.map(ite=>{
-         let a={bind:'item1',label:'input'},b={item1:1}
-         let key=a.bind
-         if(b.hasOwnProperty(a.bind)){
-           a.value=b.item1
-         }
-         console.log(a,b)
-        })
-      })
-      this.inspectionData.pageConfigData=this.pageConfigData
-      this.inspectionData.lockData=this.superviseInfoData
-      this.bussinessName=res.businessName.split(',')
-      console.log('专项检查总数据',this.inspectionData,'专项检查名称：',this.bussinessName)
-      
+      const payload = {
+        bussinessId: 'f05df0d0d7d911ea814900ff7beea89a,fcea7ad2d7c711ea814900ff7beea89a',
+        bussinessName: '在建工程项目现场检查情况表,现场作业人员抽查',
+        currentBussinessId: 'f05df0d0d7d911ea814900ff7beea89a',
+        id: '1',
+        projectId: 'E46D1EA9-651A-E954-BF10-21E6EB496061',
+        userId: '1'
+      }
+      const { data: res } = await http.post('/inspectionDetail')
+      console.log(res)
+      this.superviseInfoData = res.superviseInfoData // 头尾部固定数据
+      this.editSpecialList = this.superviseInfoData.superviseInfoItemList // 页面具体总数据
 
-      // this.editSpecialList = res;
+      this.inspectionData.pageConfigData = res.pageConfigData // 页面配置项数据
+      this.inspectionData.lockData = this.superviseInfoData
+      // this.bussinessName=res.businessName.split(',')
+
+      this.editSpecialList.forEach(item => {
+        const dataList = item.superviseInfoThirdList
+        // 给 pageConfigData 添加businessId 对应的 bussinessName属性
+        this.inspectionData.pageConfigData.forEach(ite => {
+          const configData = ite.businessIdPageConfigData
+          if (ite.businessId === item.bussinessId) {
+            ite.bussinessName = item.bussinessName
+            // console.log(configData)
+            dataList.forEach(dataItem => {
+              configData.forEach(configItem => {
+                // console.log(configItem)
+                // console.log(dataItem)
+                if (dataItem.groupName === configItem.groupName) {
+                  configItem.surfaceConfigItem.forEach(cellItem => {
+                    if (dataItem[cellItem.fieldName]) {
+                      cellItem.value = dataItem[cellItem.fieldName]
+                    }
+                  })
+                }
+              })
+            })
+            //  for(let i=0;i<dataList.length;i++){
+            //      let tmp2 = dataList[i];
+            //     configData.forEach(configItem=>{
+            //       if(tmp2.groupName===configItem.groupName){
+            //         configItem.forEach(cellNameItem=>{
+            //           if(tmp2[cellNameItem.fieldName]){
+            //             cellNameItem.value=tmp2[cellNameItem.fieldName]
+            //           }
+            //         })
+            //       }
+            //     })
+            //  }
+          }
+
+          const arr1 = [
+            {
+              groupName: 'group1',
+              surfaceConfigItem: [{ fieldName: 'item1' }, { fieldName: 'item2' }]
+            },
+            {
+              groupName: 'group2',
+              surfaceConfigItem: [{ fieldName: 'item1' }, { fieldName: 'item2' }]
+            },
+            {
+              groupName: 'group3',
+              surfaceConfigItem: [{ fieldName: 'item1' }, { fieldName: 'item2' }]
+            }
+          ]
+          const arr2 = [
+            {
+              groupName: 'group1',
+              item1: 'value123',
+              item2: 'value2'
+            },
+            {
+              groupName: 'group2',
+              item1: 'value1',
+              item2: 'value78'
+            },
+            {
+              groupName: 'group3',
+              item1: 'value1',
+              item2: 'value5'
+            }
+          ]
+          // console.log(arr1,arr2)
+          for (let i = 0; i < arr2.length; i++) {
+            const tmp2 = arr2[i]
+            for (let j = 0; j < arr1.length; j++) {
+              const tmp1 = arr1[j]
+              if (tmp2.groupName == tmp1.groupName) {
+                for (let k = 0; k < tmp1.surfaceConfigItem.length; k++) {
+                  const tmp3 = tmp1.surfaceConfigItem[k]
+                  if (tmp2[tmp3.fieldName]) {
+                    tmp3.value = tmp2[tmp3.fieldName]
+                  }
+                }
+              }
+            }
+          }
+          // console.log(arr1);
+          // 过滤label
+
+          // ite.businessIdPageConfigData.forEach((businessItem) => {
+          //   // console.log('surfaceConfigItem',businessItem.surfaceConfigItem)
+          //   businessItem.surfaceConfigItem.forEach((fieldNameItem) => {
+          //     this.editSpecialList.forEach((item) => {
+          //       item.superviseInfoThirdList.forEach((ite) => {
+          //         console.log(ite);
+          //         if (fieldNameItem.fieldName !== "") {
+          //           // console.log(fieldNameItem.fieldName);
+          //         }
+          //       });
+          //     });
+          //   });
+          //   // businessItem.surfaceConfigItem=businessItem.surfaceConfigItem.map((controlItem) => {
+          //   //   controlItem.controlCode !== "label";
+          //   // });
+          // });
+        })
+        return this.inspectionData.pageConfigData
+      })
+      this.dataCard = JSON.parse(JSON.stringify(this.inspectionData.pageConfigData))
+      console.log(this.editSpecialList, this.inspectionData.pageConfigData)
+      console.log('专项检查总数据', this.inspectionData, 'dataCard', this.dataCard)
+
+      // arr1.map(item=>{
+      //   arr2.every(el=>{
+      //     if(item.groupName===el.groupName){
+      //       let itemArr=item.surfaceConfigItem
+      //       itemArr.map(obj=>{
+      //         let key=obj.fieldName
+      //         obj[key]=el[key]||''
+      //       })
+      //       return false
+      //     }else{
+      //       return true
+      //     }
+      //   })
+      // })
+
+      // arr1.map(item=>{
+      //   arr2.map(ite=>{
+      //     if(ite.groupName===item.groupName){
+      //       item.surfaceConfigItem.forEach(it=>{
+      //         // if(ite.hasOwnProperty(it.fieldName)){}
+
+      //       })
+      //     }
+      //   })
+      // })
     },
     // 保存
     specialSave() {
-      Toast.success("已保存");
+      Toast.success('已保存')
     },
     // 提交
     specialSubmit() {
       Dialog.confirm({
-        title: "提示",
-        message: "是否提交检查记录",
+        title: '提示',
+        message: '是否提交检查记录'
       })
         .then(() => {
           // on confirm
-          Toast.success("已提交");
-          console.log("已提交");
+          Toast.success('已提交')
+          console.log('已提交')
         })
         .catch(() => {
           // on cancel
-          console.log("已取消");
-        });
+          console.log('已取消')
+        })
     },
 
     onConfirm(value) {
-      this.value = value;
-      this.showPicker = false;
+      this.value = value
+      this.showPicker = false
     },
     afterRead(file) {
       // 此时可以自行将文件上传至服务器
-      console.log(file);
-    },
-  },
-};
+      console.log(file)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -260,7 +356,7 @@ export default {
   margin-top: 15px;
   position: relative;
   &::before {
-    content: "";
+    content: '';
     border: 12px solid #199ed8;
     height: 0;
     width: 0;

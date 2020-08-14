@@ -8,6 +8,7 @@
   </div>
 </template>
 <script>
+import { Toast } from 'vant'
 export default {
   name: 'TabBar',
   props: {

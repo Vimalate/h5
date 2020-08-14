@@ -18,32 +18,31 @@
         <van-button type="info" size="mini" @click="clickRead">查看</van-button>
         <van-button type="warning" size="mini" @click="clickRemove">删除</van-button>
       </div>
-      <div class="projectNum">{{index+1}}</div>
+      <div class="projectNum">{{ index + 1 }}</div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "InspectionHistory",
+  name: 'InspectionHistory',
   data() {
     return {
       // list:[]
     }
   },
-  methods:{
-      clickEdit(){
-          console.log('clickEdit')
-      },
-      clickRead(){
-          console.log('clickRead')
-      },
-      clickRemove(){
-          console.log('clickRemove')
-      }
-      
+  methods: {
+    clickEdit() {
+      console.log('clickEdit')
+    },
+    clickRead() {
+      console.log('clickRead')
+    },
+    clickRemove() {
+      console.log('clickRemove')
+    }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -61,8 +60,8 @@ export default {
     box-sizing: border-box;
     margin-top: 15px;
     &::before {
-      content: "";
-      border: 12px solid #199ED8;
+      content: '';
+      border: 12px solid #199ed8;
       height: 0;
       width: 0;
       position: absolute;
@@ -100,9 +99,9 @@ export default {
       transform: rotate(-40deg);
     }
   }
-  .btn{
-     display: flex;
-     justify-content: flex-end;
+  .btn {
+    display: flex;
+    justify-content: flex-end;
   }
 }
 </style>

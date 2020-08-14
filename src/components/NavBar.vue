@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { Dialog, Toast } from 'vant'
 export default {
   methods: {
     onClickLeft() {

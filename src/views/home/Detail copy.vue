@@ -25,12 +25,7 @@
             right-icon="arrow-down"
           />
           <van-popup v-model="showPicker" position="bottom">
-            <van-picker
-              show-toolbar
-              :columns="columns"
-              @confirm="onConfirm"
-              @cancel="showPicker = false"
-            />
+            <van-picker show-toolbar :columns="columns" @confirm="onConfirm" @cancel="showPicker = false" />
           </van-popup>
 
           <div class="data-card">
@@ -48,12 +43,7 @@
               @click="showPicker = true"
             />
             <van-popup v-model="showPicker" position="bottom">
-              <van-picker
-                show-toolbar
-                :columns="columns"
-                @confirm="onConfirm"
-                @cancel="showPicker = false"
-              />
+              <van-picker show-toolbar :columns="columns" @confirm="onConfirm" @cancel="showPicker = false" />
             </van-popup>
             <van-field
               readonly
@@ -69,15 +59,10 @@
               @click="showPicker = true"
             />
             <van-popup v-model="showPicker" position="bottom">
-              <van-picker
-                show-toolbar
-                :columns="columns"
-                @confirm="onConfirm"
-                @cancel="showPicker = false"
-              />
+              <van-picker show-toolbar :columns="columns" @confirm="onConfirm" @cancel="showPicker = false" />
             </van-popup>
-            <van-field colon  label-align='right' label="分值" value="1" readonly />
-            <van-field colon  label-align='right' name="checkboxGroup" label="检查情况">
+            <van-field colon label-align="right" label="分值" value="1" readonly />
+            <van-field colon label-align="right" name="checkboxGroup" label="检查情况">
               <template #input>
                 <van-checkbox-group v-model="checkboxGroup" direction="horizontal">
                   <van-checkbox name="1" shape="square">符合</van-checkbox>
@@ -121,9 +106,9 @@ export default {
   },
   methods: {
     // https://easy-mock.sucaidaohang.com/
-     async getDetail(){
-       const {data:res}=await service.post('/inspectionDetail')
-       console.log(res)
+    async getDetail() {
+      const { data: res } = await service.post('/inspectionDetail')
+      console.log(res)
     },
     onConfirm(value) {
       this.value = value

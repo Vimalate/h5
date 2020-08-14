@@ -71,8 +71,7 @@
 // 检查项目
 // import InspectionItem from "@/components/program/businessComponents/specialInspection/InspectionItem.vue";
 // 历史记录
-import InspectionHistory from "@/components/InspectionHistory.vue";
-// import http from "@/model/specialInspection/http.js";
+import InspectionHistory from '@/components/InspectionHistory.vue'
 import http from '@/utils/http.js'
 export default {
   data() {
@@ -81,41 +80,41 @@ export default {
       checked: true,
       isChecked: true,
       isLoading: false,
-      searchValue: "",
-    };
+      searchValue: ''
+    }
   },
   components: {
     // InspectionItem,
-    InspectionHistory,
+    InspectionHistory
   },
   mounted() {
-    this.getSpecialList();
+    this.getSpecialList()
   },
   methods: {
     // 获取专项检查列表
     async getSpecialList() {
-      const { data: res } = await http.get("/findSpecialList");
-      console.log(res);
-      this.specialList = res.records;
-      this.specialList.map((item) => {
-        item.checkEndTime = item.checkEndTime.split(" ")[0];
-        item.checkStartTime = item.checkStartTime.split(" ")[0];
-      });
-      console.log(this.specialList);
+      const { data: res } = await http.get('/findSpecialList')
+      console.log(res)
+      this.specialList = res.records
+      this.specialList.map(item => {
+        item.checkEndTime = item.checkEndTime.split(' ')[0]
+        item.checkStartTime = item.checkStartTime.split(' ')[0]
+      })
+      console.log(this.specialList)
     },
 
     goBack() {},
     goDetail() {
-      this.$router.push({ name: "InspectionDetail" });
+      this.$router.push({ name: 'Detail' })
       // this.editSpecial();
     },
     goInspectionDetail() {},
     onRefresh() {
-      this.getSpecialList();
-      this.isLoading = false;
-    },
-  },
-};
+      this.getSpecialList()
+      this.isLoading = false
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -131,7 +130,7 @@ export default {
   padding: 0 15px;
   box-shadow: 0 5px 8px lightgray;
   &::before {
-    content: "";
+    content: '';
     border: 12px solid #199ed8;
     height: 0;
     width: 0;
