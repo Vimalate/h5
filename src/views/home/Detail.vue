@@ -4,7 +4,7 @@
       <van-tab
         class="inspection-item"
         :title="item.bussinessName"
-        v-for="item in dataCard"
+        v-for="(item) in cartData"
         :key="item.bussinessId"
       >
         <div class="detail-card">
@@ -30,22 +30,37 @@
           </div>
           <!-- data-cart -->
 
-          <div class="data-card" v-for="(dataItem, index) in item.businessIdPageConfigData" :key="index">
+          <div
+            class="data-card"
+            v-for="(dataItem, index) in item.businessIdPageConfigData"
+            :key="dataItem.id"
+          >
             <div v-for="(ite, idx) in dataItem.surfaceConfigItem" :key="idx">
               <van-field
-              :readonly='ite.isEdit==false'
-              clickable
-              colon
-              type="textarea"
-              autosize
-              center
-              rows="1"
-              v-if="ite.controlCode==='input'"
-              v-model="ite.value"
-              :label="ite.cellName"
-              placeholder="点击选择检查项"
-            />
+                :readonly="ite.isEdit=='0'"
+                clickable
+                colon
+                type="textarea"
+                autosize
+                center
+                rows="1"
+                name="picker"
+                v-model="ite.value"
+                :label="ite.cellName"
+                v-if="ite.controlCode==='input'"
+                placeholder="点击选择检查项"
+              />
+               <van-field colon v-if="ite.controlCode=='radio'" name="checkboxGroup" :label="ite.cellName">
+              <template #input>
+                <van-radio-group v-model="ite.value" direction="horizontal">
+                  <van-radio name="1" shape="square">符合</van-radio>
+                  <van-radio name="2" shape="square">不符合</van-radio>
+                </van-radio-group>
+              </template>
+            </van-field>
+            <van-field readonly colon v-if="ite.controlCode=='number'" clickable   v-model="ite.value" :label="ite.cellName" />
             </div>
+            
             <!-- <van-field readonly clickable colon name="picker" :value="dataItem.item2" label="分值" />
             <van-field
               colon
@@ -168,18 +183,19 @@ export default {
   methods: {
     // 新增编辑
     async editSpecial() {
-      const payload = {
-        bussinessId: 'f05df0d0d7d911ea814900ff7beea89a,fcea7ad2d7c711ea814900ff7beea89a',
-        bussinessName: '在建工程项目现场检查情况表,现场作业人员抽查',
-        currentBussinessId: 'f05df0d0d7d911ea814900ff7beea89a',
-        id: '1',
-        projectId: 'E46D1EA9-651A-E954-BF10-21E6EB496061',
-        userId: '1'
-      }
-      const { data: res } = await http.post('/inspectionDetail')
-      console.log(res)
-      this.superviseInfoData = res.superviseInfoData // 头尾部固定数据
-      this.editSpecialList = this.superviseInfoData.superviseInfoItemList // 页面具体总数据
+      let payload = {
+        bussinessId:
+          "f05df0d0d7d911ea814900ff7beea89a,fcea7ad2d7c711ea814900ff7beea89a",
+        bussinessName: "在建工程项目现场检查情况表,现场作业人员抽查",
+        currentBussinessId: "f05df0d0d7d911ea814900ff7beea89a",
+        id: "1",
+        projectId: "E46D1EA9-651A-E954-BF10-21E6EB496061",
+        userId: "1",
+      };
+      const { data: res } = await http.post("/inspectionDetail", payload);
+      console.log(res);
+      this.superviseInfoData = res.superviseInfoData; //头尾部固定数据
+      this.editSpecialList = this.superviseInfoData.superviseInfoItemList; //页面具体总数据
 
       this.inspectionData.pageConfigData = res.pageConfigData // 页面配置项数据
       this.inspectionData.lockData = this.superviseInfoData
