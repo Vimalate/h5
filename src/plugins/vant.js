@@ -21,7 +21,8 @@ import {
   CheckboxGroup,
   Radio,
   RadioGroup,
-  Uploader
+  Uploader,
+  Form
 } from 'vant'
 Vue.use(Button)
 Vue.use(Cell)
@@ -45,3 +46,4 @@ Vue.use(Tabbar)
   .use(Radio)
   .use(RadioGroup)
   .use(Uploader)
+  .use(Form)

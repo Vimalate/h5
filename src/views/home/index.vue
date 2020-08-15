@@ -93,7 +93,7 @@ export default {
   methods: {
     // 获取专项检查列表
     async getSpecialList() {
-      const { data: res } = await http.get('/findSpecialList')
+      const { data: res } = await http.get('/getData')
       console.log(res)
       this.specialList = res.records
       this.specialList.map(item => {

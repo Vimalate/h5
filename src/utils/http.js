@@ -5,7 +5,8 @@ import { Toast } from 'vant'
 
 const http = axios.create({
   // baseURL: "http://192.168.4.178:10003/specialInspection",
-  baseURL: 'https://easy-mock.sucaidaohang.com/mock/5f328d31eeda710d1440d783/inspection',
+  //
+  baseURL: 'http://127.0.0.1:7300/mock/5f37b4f003adfc13084ddd9e',
   timeout: 5000
 })
 
