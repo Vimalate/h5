@@ -4,9 +4,8 @@
       <van-tab
         class="inspection-item"
         :title="item.bussinessName"
-        v-for="(item,index) in cartData"
-        :key="item.bussinessId"
-        :tabData="tabData(item,index)"
+        v-for="(item) in cartData"
+        :key="item.businessId"
       >
         <div class="detail-card">
           <!-- header -->
@@ -40,16 +39,18 @@
               />
             </van-popup>
           </div>
-
+          <!-- <div>{{item.businessId}}</div> -->
           <!-- data-cart -->
-          <!-- 每页有几个检查项 => superviseInfoThirdList（包含具体检查项目）-->
+          <!-- 每页有几个检查项 group => superviseInfoThirdList（包含具体检查项目）-->
           <div
             class="data-card"
             v-for="(dataItem, index) in item.businessIdPageConfigData"
             :key="dataItem.id"
           >
             <!-- 根据配置数据动态渲染 -->
-            <data-list :editData="dataItem" :groupData='getGroupData(item.bussinessId,dataItem)'></data-list>
+            <!-- getGroupData(item.businessId,dataItem.groupName)" -->
+            <!-- :groupData="getGroupData('f05df0d0d7d911ea814900ff7beea89a','group1')" -->
+            <data-list :editSpecialList='editSpecialList' :editData="dataItem" :id="item.businessId" :group="dataItem.groupName"></data-list>
             <div class="projectNum">{{ index + 1 }}</div>
           </div>
 
@@ -105,11 +106,13 @@ export default {
       superviseInfoData: [],
       checkboxGroup: [],
       // pageConfigData:[],//页面配置数据
-
+      id:'',
+      group:'',
       bussinessName: [], // 头部专项检查名称
       inspectionData: {}, // 专项检查总数据
       cartData: [],
       editData: {},
+      groupData: {}, //每一页数据
       value: '',
       columns: ['杭州', '宁波', '温州', '嘉兴', '湖州'],
       showPicker: false,
@@ -120,16 +123,16 @@ export default {
     DataList
   },
   // item.businessId===editSpecialList[index].businessId?editSpecialList[index].superviseInfoThirdList:[]
-  computed: {
-    
-  },
+  computed: {},
   mounted() {
     this.editSpecial()
   },
   methods: {
-    getGroupData(id,data){
-      
+    getIte() {
+      // return 1
+      console.log('ok', this.getGroupData('f05df0d0d7d911ea814900ff7beea89a', 'group1'))
     },
+ 
     // 新增编辑
     async editSpecial() {
       let payload = {
@@ -164,7 +167,7 @@ export default {
                 if (dataItem.groupName === configItem.groupName) {
                   configItem.surfaceConfigItem.forEach(cellItem => {
                     if (dataItem[cellItem.fieldName] !== undefined) {
-                      // return groupData=dataItem  
+                      // return groupData=dataItem
                       cellItem.value = dataItem[cellItem.fieldName]
                     }
                   })
@@ -231,25 +234,7 @@ export default {
               }
             }
           }
-          // console.log(arr1);
-          // 过滤label
-
-          // ite.businessIdPageConfigData.forEach((businessItem) => {
-          //   // console.log('surfaceConfigItem',businessItem.surfaceConfigItem)
-          //   businessItem.surfaceConfigItem.forEach((fieldNameItem) => {
-          //     this.editSpecialList.forEach((item) => {
-          //       item.superviseInfoThirdList.forEach((ite) => {
-          //         console.log(ite);
-          //         if (fieldNameItem.fieldName !== "") {
-          //           // console.log(fieldNameItem.fieldName);
-          //         }
-          //       });
-          //     });
-          //   });
-          //   // businessItem.surfaceConfigItem=businessItem.surfaceConfigItem.map((controlItem) => {
-          //   //   controlItem.controlCode !== "label";
-          //   // });
-          // });
+    
         })
         return this.inspectionData.pageConfigData
       })
@@ -257,31 +242,6 @@ export default {
       console.log(this.editSpecialList, this.inspectionData.pageConfigData)
       console.log('专项检查总数据', this.inspectionData, 'cartData', this.cartData)
 
-      // arr1.map(item=>{
-      //   arr2.every(el=>{
-      //     if(item.groupName===el.groupName){
-      //       let itemArr=item.surfaceConfigItem
-      //       itemArr.map(obj=>{
-      //         let key=obj.fieldName
-      //         obj[key]=el[key]||''
-      //       })
-      //       return false
-      //     }else{
-      //       return true
-      //     }
-      //   })
-      // })
-
-      // arr1.map(item=>{
-      //   arr2.map(ite=>{
-      //     if(ite.groupName===item.groupName){
-      //       item.surfaceConfigItem.forEach(it=>{
-      //         // if(ite.hasOwnProperty(it.fieldName)){}
-
-      //       })
-      //     }
-      //   })
-      // })
     },
     // 保存
     specialSave() {
@@ -303,9 +263,9 @@ export default {
           console.log('已取消')
         })
     },
-    tabData(item,index){
-      if(item.businessId===this.editSpecialList[index].businessId){
-        console.log('ok',this.editSpecialList[index].superviseInfoThirdList)
+    tabData(item, index) {
+      if (item.businessId === this.editSpecialList[index].businessId) {
+        console.log('ok', this.editSpecialList[index].superviseInfoThirdList)
         return this.editSpecialList[index].superviseInfoThirdList
       }
     },
