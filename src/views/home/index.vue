@@ -19,7 +19,7 @@
               >
                 <div class="name">
                   <span>{{item.specialInspectionName}}</span>
-                  <van-checkbox v-model='item.checked' @change='checkedChange(item.id)'></van-checkbox>
+                  <van-checkbox v-model='item.checked' @change='checkedChange(item)'></van-checkbox>
                 </div>
                 <div class="desc">
                   <span>检查时间范围</span>
@@ -36,7 +36,7 @@
               <!-- </van-list> -->
             </div>
           </van-pull-refresh>
-          <div class="submit" @click="goInspectionDetail">
+          <div class="submit" >
             <van-button
               class="submit-btn"
               block
@@ -83,11 +83,7 @@ export default {
       searchValue: ''
     }
   },
-  // computed: {
-  //   isChecked:{
-      
-  //   }
-  // },
+ 
   components: {
     // InspectionItem,
     InspectionHistory
@@ -96,14 +92,16 @@ export default {
     this.getSpecialList()
   },
   methods: {
-    checkedChange(id){
-      console.log(id.id)
-      let idx=this.checkedArr.indexOf(id)
+    checkedChange(item){
+      console.log(item.id)
+      // id.checked=!id.checked
+      // console.log(id.checked)
+      let idx=this.checkedArr.indexOf(item)
       console.log(idx)
-      if(idx>0){
+      if(idx>-1){
         this.checkedArr.splice(idx,1)
       }else{
-        this.checkedArr.push(id)
+        this.checkedArr.push(item)
       }
       console.log(this.checkedArr)
     },
@@ -111,7 +109,14 @@ export default {
     async getSpecialList() {
       const { data: res } = await http.get('/getData')
       console.log(res)
+      res.records.forEach(i=>{
+        i.checked=false
+      })
       this.specialList = res.records
+      // JSON.parse(JSON.stringify(res.records))
+      // this.specialList.forEach(i=>{
+      //   i.checked=false
+      // })
       this.specialList.map(item => {
         item.checkEndTime = item.checkEndTime.split(' ')[0]
         item.checkStartTime = item.checkStartTime.split(' ')[0]
@@ -124,7 +129,6 @@ export default {
       this.$router.push({ name: 'Detail' })
       // this.editSpecial();
     },
-    goInspectionDetail() {},
     onRefresh() {
       this.getSpecialList()
       this.isLoading = false
