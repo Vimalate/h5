@@ -103,20 +103,21 @@ export default {
       }else{
         this.checkedArr.push(item)
       }
-      console.log(this.checkedArr)
+      console.log(JSON.parse(JSON.stringify(this.checkedArr)))
     },
     // 获取专项检查列表
     async getSpecialList() {
       const { data: res } = await http.get('/getData')
       console.log(res)
-      res.records.forEach(i=>{
-        i.checked=false
-      })
-      this.specialList = res.records
-      // JSON.parse(JSON.stringify(res.records))
-      // this.specialList.forEach(i=>{
+      // this.$set（）
+      // res.records.forEach(i=>{
       //   i.checked=false
       // })
+      this.specialList = res.records
+      // JSON.parse(JSON.stringify(res.records))
+      this.specialList.forEach(i=>{
+        this.$set(i,'checked',false)
+      })
       this.specialList.map(item => {
         item.checkEndTime = item.checkEndTime.split(' ')[0]
         item.checkStartTime = item.checkStartTime.split(' ')[0]
