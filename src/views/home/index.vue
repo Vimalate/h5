@@ -19,7 +19,7 @@
               >
                 <div class="name">
                   <span>{{item.specialInspectionName}}</span>
-                  <van-checkbox v-model="isChecked"></van-checkbox>
+                  <van-checkbox v-model='item.checked' @change='checkedChange(item.id)'></van-checkbox>
                 </div>
                 <div class="desc">
                   <span>检查时间范围</span>
@@ -77,12 +77,17 @@ export default {
   data() {
     return {
       specialList: {}, //专项检查列表
-      checked: true,
-      isChecked: true,
+      isChecked: false,
       isLoading: false,
+      checkedArr:[],
       searchValue: ''
     }
   },
+  // computed: {
+  //   isChecked:{
+      
+  //   }
+  // },
   components: {
     // InspectionItem,
     InspectionHistory
@@ -91,6 +96,17 @@ export default {
     this.getSpecialList()
   },
   methods: {
+    checkedChange(id){
+      console.log(id.id)
+      let idx=this.checkedArr.indexOf(id)
+      console.log(idx)
+      if(idx>0){
+        this.checkedArr.splice(idx,1)
+      }else{
+        this.checkedArr.push(id)
+      }
+      console.log(this.checkedArr)
+    },
     // 获取专项检查列表
     async getSpecialList() {
       const { data: res } = await http.get('/getData')
