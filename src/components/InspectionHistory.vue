@@ -33,6 +33,13 @@ export default {
   },
   methods: {
     clickEdit() {
+      // data = {
+      //   orderColumn: 'create_time',
+      //   orderType: 'DESC',
+      //   pageNo: 1,
+      //   pageSize: 10,
+      //   projectId: 'E46D1EA9-651A-E954-BF10-21E6EB496061'
+      // }
       console.log('clickEdit')
     },
     clickRead() {
