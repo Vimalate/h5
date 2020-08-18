@@ -19,7 +19,7 @@
               >
                 <div class="name">
                   <span>{{item.specialInspectionName}}</span>
-                  <van-checkbox v-model="isChecked"></van-checkbox>
+                  <van-checkbox v-model='item.checked' @change='checkedChange(item)'></van-checkbox>
                 </div>
                 <div class="desc">
                   <span>检查时间范围</span>
@@ -36,7 +36,7 @@
               <!-- </van-list> -->
             </div>
           </van-pull-refresh>
-          <div class="submit" @click="goInspectionDetail">
+          <div class="submit" >
             <van-button
               class="submit-btn"
               block
@@ -77,12 +77,13 @@ export default {
   data() {
     return {
       specialList: {}, //专项检查列表
-      checked: true,
-      isChecked: true,
+      isChecked: false,
       isLoading: false,
+      checkedArr:[],
       searchValue: ''
     }
   },
+ 
   components: {
     // InspectionItem,
     InspectionHistory
@@ -91,11 +92,32 @@ export default {
     this.getSpecialList()
   },
   methods: {
+    checkedChange(item){
+      console.log(item.id)
+      // id.checked=!id.checked
+      // console.log(id.checked)
+      let idx=this.checkedArr.indexOf(item)
+      console.log(idx)
+      if(idx>-1){
+        this.checkedArr.splice(idx,1)
+      }else{
+        this.checkedArr.push(item)
+      }
+      console.log(JSON.parse(JSON.stringify(this.checkedArr)))
+    },
     // 获取专项检查列表
     async getSpecialList() {
       const { data: res } = await http.get('/getData')
       console.log(res)
+      // this.$set（）
+      // res.records.forEach(i=>{
+      //   i.checked=false
+      // })
       this.specialList = res.records
+      // JSON.parse(JSON.stringify(res.records))
+      this.specialList.forEach(i=>{
+        this.$set(i,'checked',false)
+      })
       this.specialList.map(item => {
         item.checkEndTime = item.checkEndTime.split(' ')[0]
         item.checkStartTime = item.checkStartTime.split(' ')[0]
@@ -108,7 +130,6 @@ export default {
       this.$router.push({ name: 'Detail' })
       // this.editSpecial();
     },
-    goInspectionDetail() {},
     onRefresh() {
       this.getSpecialList()
       this.isLoading = false

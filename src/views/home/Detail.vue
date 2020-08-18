@@ -50,7 +50,12 @@
             <!-- 根据配置数据动态渲染 -->
             <!-- getGroupData(item.businessId,dataItem.groupName)" -->
             <!-- :groupData="getGroupData('f05df0d0d7d911ea814900ff7beea89a','group1')" -->
-            <data-list :editSpecialList='editSpecialList' :editData="dataItem" :id="item.businessId" :group="dataItem.groupName"></data-list>
+            <data-list
+              :editSpecialList="editSpecialList"
+              :editData="dataItem"
+              :id="item.businessId"
+              :group="dataItem.groupName"
+            ></data-list>
             <div class="projectNum">{{ index + 1 }}</div>
           </div>
 
@@ -106,8 +111,8 @@ export default {
       superviseInfoData: [],
       checkboxGroup: [],
       // pageConfigData:[],//页面配置数据
-      id:'',
-      group:'',
+      id: '',
+      group: '',
       bussinessName: [], // 头部专项检查名称
       inspectionData: {}, // 专项检查总数据
       cartData: [],
@@ -132,7 +137,30 @@ export default {
       // return 1
       console.log('ok', this.getGroupData('f05df0d0d7d911ea814900ff7beea89a', 'group1'))
     },
- 
+    randomString(e) {
+      //形参e,需要产生随机字符串的长度
+      //如果没有传参，默认生成32位长度随机字符串
+      e = e || 32
+      //模拟随机字符串库
+      var t = 'abcdefhijkmnprstwxyz2345678',
+        a = t.length, //字符串t的长度，随机数生成最大值
+        n = ''
+      for (let i = 0; i < e; i++) {
+        //随机生成长度为e的随机字符串拼接
+        n += t.charAt(Math.floor(Math.random() * a))
+      }
+      //返回随机组合字符串
+      return n
+    },
+    getId(){
+      this.editSpecialList.forEach(item=>{
+        item.id=this.randomString()
+        item.superviseInfoThirdList.forEach(ite=>{
+          ite.id=this.randomString()
+          console.log(ite.id)
+        })
+      })
+    },
     // 新增编辑
     async editSpecial() {
       let payload = {
@@ -151,41 +179,30 @@ export default {
       this.inspectionData.pageConfigData = res.pageConfigData // 页面配置项数据
       this.inspectionData.lockData = this.superviseInfoData
       // this.bussinessName=res.businessName.split(',')
-
+      this.getId()
       this.editSpecialList.forEach(item => {
         const dataList = item.superviseInfoThirdList
+        
         // 给 pageConfigData 添加businessId 对应的 bussinessName属性
         this.inspectionData.pageConfigData.forEach(ite => {
           const configData = ite.businessIdPageConfigData
           if (ite.businessId === item.bussinessId) {
             ite.bussinessName = item.bussinessName
             // console.log(configData)
-            dataList.forEach(dataItem => {
-              configData.forEach(configItem => {
-                // console.log(configItem)
-                // console.log(dataItem)
-                if (dataItem.groupName === configItem.groupName) {
-                  configItem.surfaceConfigItem.forEach(cellItem => {
-                    if (dataItem[cellItem.fieldName] !== undefined) {
-                      // return groupData=dataItem
-                      cellItem.value = dataItem[cellItem.fieldName]
-                    }
-                  })
-                }
-              })
-            })
-            //  for(let i=0;i<dataList.length;i++){
-            //      let tmp2 = dataList[i];
-            //     configData.forEach(configItem=>{
-            //       if(tmp2.groupName===configItem.groupName){
-            //         configItem.forEach(cellNameItem=>{
-            //           if(tmp2[cellNameItem.fieldName]){
-            //             cellNameItem.value=tmp2[cellNameItem.fieldName]
-            //           }
-            //         })
-            //       }
-            //     })
-            //  }
+            // dataList.forEach(dataItem => {
+            //   configData.forEach(configItem => {
+            //     // console.log(configItem)
+            //     // console.log(dataItem)
+            //     if (dataItem.groupName === configItem.groupName) {
+            //       configItem.surfaceConfigItem.forEach(cellItem => {
+            //         if (dataItem[cellItem.fieldName] !== undefined) {
+            //           // return groupData=dataItem
+            //           cellItem.value = dataItem[cellItem.fieldName]
+            //         }
+            //       })
+            //     }
+            //   })
+            // })
           }
 
           const arr1 = [
@@ -234,14 +251,12 @@ export default {
               }
             }
           }
-    
         })
         return this.inspectionData.pageConfigData
       })
       this.cartData = JSON.parse(JSON.stringify(this.inspectionData.pageConfigData))
       console.log(this.editSpecialList, this.inspectionData.pageConfigData)
       console.log('专项检查总数据', this.inspectionData, 'cartData', this.cartData)
-
     },
     // 保存
     specialSave() {
@@ -269,11 +284,7 @@ export default {
         return this.editSpecialList[index].superviseInfoThirdList
       }
     },
-    // // 每一页
-    // isThirdList(item,data){
-    //   // item.businessId===editSpecialList[index].businessId?editSpecialList[index].superviseInfoThirdList:[]
-    //   if(item.businessId===data){}
-    // },
+
     onConfirm(value) {
       this.value = value
       this.showPicker = false
