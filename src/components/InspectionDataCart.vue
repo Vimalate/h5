@@ -58,6 +58,7 @@
 
 <script>
 export default {
+  name: 'InspectionDataCard',
   props: {
     editData: {
       type: Object,
@@ -93,7 +94,7 @@ export default {
     // console.log(this.groupData)
     // console.log(this.editData)
     console.log(this.id, this.group)
-     this.getData()
+    this.getData()
   },
   methods: {
     getData() {
