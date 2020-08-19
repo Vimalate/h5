@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="main">
-      <van-tabs type="card" background="#3C85F7" title-active-color="#3C85F7" color="#fff">
+      <van-tabs @click="onClick" type="card" background="#3C85F7" title-active-color="#3C85F7" color="#fff">
         <van-tab title="专项检查" dot>
           <van-pull-refresh v-model="isLoading" success-text="刷新成功" @refresh="onRefresh">
             <!-- <van-list
@@ -19,7 +19,7 @@
               >
                 <div class="name">
                   <span>{{item.specialInspectionName}}</span>
-                  <van-checkbox v-model='item.checked' @change='checkedChange(item)'></van-checkbox>
+                  <van-checkbox v-model="item.checked" @change="checkedChange(item)"></van-checkbox>
                 </div>
                 <div class="desc">
                   <span>检查时间范围</span>
@@ -36,7 +36,7 @@
               <!-- </van-list> -->
             </div>
           </van-pull-refresh>
-          <div class="submit" >
+          <div class="submit">
             <van-button
               class="submit-btn"
               block
@@ -47,17 +47,7 @@
           </div>
         </van-tab>
         <van-tab title="历史记录">
-          <van-search
-            v-model="searchValue"
-            shape="round"
-            right-icon
-            input-align="center"
-            placeholder="请输入搜索关键词"
-            class="search"
-            clearable
-          />
-          <div class="search-bottom-bg"></div>
-          <inspection-history></inspection-history>
+          <inspection-history :historyData='historyData'></inspection-history>
         </van-tab>
       </van-tabs>
     </div>
@@ -73,17 +63,19 @@
 // 历史记录
 import InspectionHistory from '@/components/InspectionHistory.vue'
 import http from '@/utils/http.js'
+import { Toast } from 'vant'
 export default {
   data() {
     return {
       specialList: {}, //专项检查列表
       isChecked: false,
       isLoading: false,
-      checkedArr:[],
-      searchValue: ''
+      checkedArr: [],
+      
+      historyData:{}//历史记录
     }
   },
- 
+
   components: {
     // InspectionItem,
     InspectionHistory
@@ -92,31 +84,53 @@ export default {
     this.getSpecialList()
   },
   methods: {
-    checkedChange(item){
+    onClick(name, title) {
+      Toast(title)
+      if (title === '历史记录') {
+        // this.getHistory()
+        console.log('index')
+      }
+    },
+    async getHistory() {
+      let params = {
+        orderColumn: 'create_time',
+        orderType: 'DESC',
+        pageNo: 1,
+        pageSize: 10,
+        projectId: 'E46D1EA9-651A-E954-BF10-21E6EB496061'
+      }
+      const { data: res } = await http.post('/historyList', params)
+      console.log(res)
+      this.historyData=res.records
+      console.log(this.historyData)
+    },
+    checkedChange(item) {
       console.log(item.id)
       // id.checked=!id.checked
       // console.log(id.checked)
-      let idx=this.checkedArr.indexOf(item)
+      let idx = this.checkedArr.indexOf(item)
       console.log(idx)
-      if(idx>-1){
-        this.checkedArr.splice(idx,1)
-      }else{
+      if (idx > -1) {
+        this.checkedArr.splice(idx, 1)
+      } else {
         this.checkedArr.push(item)
       }
       console.log(JSON.parse(JSON.stringify(this.checkedArr)))
     },
     // 获取专项检查列表
     async getSpecialList() {
-      const { data: res } = await http.get('/getData')
+      console.log('history')
+      const res = await http.get('/getData')
       console.log(res)
+   
       // this.$set（）
       // res.records.forEach(i=>{
       //   i.checked=false
       // })
-      this.specialList = res.records
+      this.specialList = res.data.records
       // JSON.parse(JSON.stringify(res.records))
-      this.specialList.forEach(i=>{
-        this.$set(i,'checked',false)
+      this.specialList.forEach(i => {
+        this.$set(i, 'checked', false)
       })
       this.specialList.map(item => {
         item.checkEndTime = item.checkEndTime.split(' ')[0]
@@ -194,10 +208,7 @@ export default {
     }
   }
 }
-.search-bottom-bg {
-  height: 5px;
-  background-color: #f8f8f8;
-}
+
 .container {
   position: relative;
 }

@@ -18,12 +18,12 @@
                 :value="item.bussinessName"
                 readonly
               />
-              <van-field label="工程名称：" :value="superviseInfoData.monitorName" readonly />
+              <van-field label="工程名称：" :value="inData.monitorName" readonly />
             </van-cell-group>
             <van-field
               clickable
               name="picker"
-              :value="superviseInfoData.item1"
+              :value="inData.item1"
               label="检查类型："
               label-class="inspection-type-title"
               placeholder="点击选择检查类型"
@@ -61,7 +61,7 @@
 
           <!-- footer -->
           <van-cell-group class="footer">
-            <van-field label="监督措施：" :value="superviseInfoData.item2" readonly />
+            <van-field label="监督措施：" :value="inData.item2" readonly />
             <van-field name="radio" label="处理结果：">
               <template #input>
                 <van-radio-group v-model="radio" direction="horizontal">
@@ -70,12 +70,8 @@
                 </van-radio-group>
               </template>
             </van-field>
-            <van-field label="检查人：" :value="superviseInfoData.itemMonitor" readonly />
-            <van-field
-              label="检查时间："
-              :value="superviseInfoData.dateItemRecord.split(' ')[0]"
-              readonly
-            />
+            <van-field label="检查人：" :value="inData.itemMonitor" readonly />
+            <van-field label="检查时间：" :value="inData.dateItemRecord.split(' ')[0]" readonly />
             <van-field label="附件" value="PDF" readonly />
           </van-cell-group>
           <!-- 上传 -->
@@ -108,7 +104,7 @@ export default {
   data() {
     return {
       editSpecialList: [], // 新增编辑列表
-      superviseInfoData: [],
+      inData: [],
       checkboxGroup: [],
       // pageConfigData:[],//页面配置数据
       id: '',
@@ -121,7 +117,10 @@ export default {
       value: '',
       columns: ['杭州', '宁波', '温州', '嘉兴', '湖州'],
       showPicker: false,
-      radio: '1'
+      radio: '1',
+      superviseInfoData:{},//新增造的总数据
+      superviseInfoItemList:[],//新增造的二级表
+      superviseInfoThirdList:[]//新增造的三级表
     }
   },
   components: {
@@ -133,6 +132,40 @@ export default {
     this.editSpecial()
   },
   methods: {
+    createData() {
+      let itemData = {
+        superviseInfoId: '533f3139db8311ea824d00ff7beea89a',
+        superviseInfoItemId: '1855fea3db8c11ea824d00ff7beea89a',
+        bussinessId: 'f05df0d0d7d911ea814900ff7beea89a',
+        bussinessName: '在建工程项目现场检查情况表',
+        groupName: 'group1',
+        item1: '施工现场门禁设施',
+        item2: '1',
+        item3: '施工现场配备门禁设施，得1分，否则不得分。',
+        item4: '1'
+      }
+      let arrLength=[]
+      this.cartData.forEach(item=>{
+       arrLength.push(item.businessIdPageConfigData.length )
+      })
+      console.log(arrLength)
+     let listData=arrLength.map(v=>Array(v).fill(itemData))
+      console.log('listData',listData)
+      
+     let data= listData.map(item=>{
+       let infoItemList={
+         "superviseInfoId": "533f3139db8311ea824d00ff7beea89a",
+          "bussinessId": "f05df0d0d7d911ea814900ff7beea89a",
+          "bussinessName": "在建工程项目现场检查情况表",
+          "superviseInfoThirdList":[]
+      }
+       console.log(item)
+        infoItemList.superviseInfoThirdList=item
+        console.log('infoItemList',infoItemList)
+        return infoItemList
+      })
+      console.log('data',data)
+    },
     getIte() {
       // return 1
       console.log('ok', this.getGroupData('f05df0d0d7d911ea814900ff7beea89a', 'group1'))
@@ -152,11 +185,11 @@ export default {
       //返回随机组合字符串
       return n
     },
-    getId(){
-      this.editSpecialList.forEach(item=>{
-        item.id=this.randomString()
-        item.superviseInfoThirdList.forEach(ite=>{
-          ite.id=this.randomString()
+    getId() {
+      this.editSpecialList.forEach(item => {
+        item.id = this.randomString()
+        item.superviseInfoThirdList.forEach(ite => {
+          ite.id = this.randomString()
           console.log(ite.id)
         })
       })
@@ -173,16 +206,16 @@ export default {
       }
       const { data: res } = await http.post('/editInspection', payload)
       console.log(res)
-      this.superviseInfoData = res.superviseInfoData //头尾部固定数据
-      this.editSpecialList = this.superviseInfoData.superviseInfoItemList //页面具体总数据
+      this.inData = res.superviseInfoData //头尾部固定数据
+      this.editSpecialList = this.inData.superviseInfoItemList //页面具体总数据
 
       this.inspectionData.pageConfigData = res.pageConfigData // 页面配置项数据
-      this.inspectionData.lockData = this.superviseInfoData
+      this.inspectionData.lockData = this.inData
       // this.bussinessName=res.businessName.split(',')
       this.getId()
       this.editSpecialList.forEach(item => {
         const dataList = item.superviseInfoThirdList
-        
+
         // 给 pageConfigData 添加businessId 对应的 bussinessName属性
         this.inspectionData.pageConfigData.forEach(ite => {
           const configData = ite.businessIdPageConfigData
@@ -255,6 +288,7 @@ export default {
         return this.inspectionData.pageConfigData
       })
       this.cartData = JSON.parse(JSON.stringify(this.inspectionData.pageConfigData))
+      this.createData()
       console.log(this.editSpecialList, this.inspectionData.pageConfigData)
       console.log('专项检查总数据', this.inspectionData, 'cartData', this.cartData)
     },

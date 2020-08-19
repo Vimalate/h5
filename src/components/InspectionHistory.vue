@@ -1,37 +1,67 @@
 <template>
   <div class="history-container">
-    <div class="history-list van-hairline--surround" v-for="(item, index) in 3" :key="index">
+     <van-search
+            v-model="searchValue"
+            shape="round"
+            right-icon
+            input-align="center"
+            placeholder="请输入搜索关键词"
+            class="search"
+            clearable
+          />
+          <div class="search-bottom-bg"></div>
+    <div class="history-list van-hairline--surround" v-for="(item) in historyData" :key="item.id">
       <div class="item name">
         <span>专项检查名称：</span>
         <span>XXXXX检查项目</span>
       </div>
       <div class="item Monitor">
         <span>检察人员：</span>
-        <span>吴晓竹</span>
+        <span>{{item.itemMonitor}}</span>
       </div>
       <div class="item date">
         <span>检查日期：</span>
-        <span class="date-record">2020-7-24</span>
+        <span class="date-record">{{item.dateItemRecord}}</span>
       </div>
       <div class="btn">
         <van-button type="primary" size="mini" @click="clickEdit">编辑</van-button>
         <van-button type="info" size="mini" @click="clickRead">查看</van-button>
         <van-button type="warning" size="mini" @click="clickRemove">删除</van-button>
       </div>
-      <div class="projectNum">{{ index + 1 }}</div>
+      <!-- <div class="projectNum">{{ index + 1 }}</div> -->
     </div>
   </div>
 </template>
 
 <script>
+import http from '@/utils/http.js'
 export default {
   name: 'InspectionHistory',
+  // props:['historyData'],
   data() {
     return {
       // list:[]
+      searchValue: '',
+      historyData:[]
     }
   },
+  mounted() {
+    this.getHistory()
+  },
   methods: {
+     async getHistory() {
+      let params = {
+        orderColumn: 'create_time',
+        orderType: 'DESC',
+        pageNo: 1,
+        pageSize: 10,
+        projectId: 'E46D1EA9-651A-E954-BF10-21E6EB496061'
+      }
+      const { data: res } = await http.post('/historyList', params)
+      console.log(res)
+      this.historyData=res.records
+      console.log(this.historyData)
+    },
     clickEdit() {
       // data = {
       //   orderColumn: 'create_time',
@@ -110,5 +140,13 @@ export default {
     display: flex;
     justify-content: flex-end;
   }
+  
+}
+.search{
+  width: 100vw;
+}
+.search-bottom-bg {
+  height: 5px;
+  background-color: #f8f8f8;
 }
 </style>
