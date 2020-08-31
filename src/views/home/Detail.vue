@@ -55,6 +55,7 @@
               :editData="dataItem"
               :id="item.businessId"
               :group="dataItem.groupName"
+              ref="dataCart"
             ></data-list>
             <div class="projectNum">{{ index + 1 }}</div>
           </div>
@@ -132,6 +133,7 @@ export default {
     this.editSpecial()
   },
   methods: {
+
     createData() {
       let itemData = {
         superviseInfoId: '533f3139db8311ea824d00ff7beea89a',
@@ -294,6 +296,8 @@ export default {
     },
     // 保存
     specialSave() {
+      console.log(this.$refs.dataCart)
+      this.$refs.dataCart.isValidate()
       Toast.success('已保存')
     },
     // 提交

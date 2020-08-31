@@ -22,7 +22,8 @@ import {
   Radio,
   RadioGroup,
   Uploader,
-  Form
+  Form,
+  Calendar
 } from 'vant'
 Vue.use(Button)
 Vue.use(Cell)
@@ -47,3 +48,4 @@ Vue.use(Tabbar)
   .use(RadioGroup)
   .use(Uploader)
   .use(Form)
+  .use(Calendar)
